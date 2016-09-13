@@ -77,7 +77,7 @@ namespace Consul.Discovery
 
             _items = new ConcurrentQueue<Tuple<string, RegistrationType>>();
             _timer = new Timer((state) => ProcessNextItem(), null, ms, ms);
-            Console.WriteLine("here 2");
+            
             ConfigureAutoRegistration();
         }
 
@@ -126,9 +126,6 @@ namespace Consul.Discovery
         /// </summary>
         private static void ConfigureAutoRegistration()
         {
-            Console.WriteLine("here 3");
-            Console.WriteLine(Environment.GetCommandLineArgs().Length);
-
             string key = "discovery-server-origin";
 
             // Extracting discovery server origin either from command line argument or from environment variable.

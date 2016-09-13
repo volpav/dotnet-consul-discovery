@@ -26,8 +26,7 @@ namespace Consul.Discovery
             }
 
             Name = name;
-
-            Console.WriteLine("here");
+            
             // Adding to the registry in case of auto-registration.
             Registry.Add(Name);
         }

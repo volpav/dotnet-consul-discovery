@@ -17,8 +17,6 @@ namespace Consul.Discovery.Example.Controllers.Controllers
             // Step 1: Getting actual service address (base URL) via service discovery.
             string url = await DiscoveryClient.Default.GetServiceUrl("values-service");
 
-            Console.WriteLine("*** client: " + DiscoveryClient.Default != null);
-
             // Step 2: Making a remote call to the service and reading the output.
             var response = await new HttpClient().GetAsync(new Uri(new Uri("http://" + url), "/api/values"));
             var json = await response.Content.ReadAsStringAsync();

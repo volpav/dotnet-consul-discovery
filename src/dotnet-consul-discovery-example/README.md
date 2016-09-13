@@ -1,7 +1,7 @@
 ﻿# Example: Service Discovery with Consul and .NET
 This project contains sample .NET Core Web API project that utilizes Consul service discovery wrapper.
 
-## Running the Project
+## Building and Running
 
 From the directory where this `README.md` file resides, execute:
 
