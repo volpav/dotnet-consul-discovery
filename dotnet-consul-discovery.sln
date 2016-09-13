@@ -1,0 +1,39 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCD6899D-2D6F-44FC-8D9B-A2A9BEFA0676}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEDC32ED-61C7-445A-9BB7-37ECD63C6E85}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-consul-discovery", "src\dotnet-consul-discovery\dotnet-consul-discovery.xproj", "{40CA711B-61C5-4A62-9DCA-D55001651EEE}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-consul-discovery-example", "src\dotnet-consul-discovery-example\dotnet-consul-discovery-example.xproj", "{57C3C5E4-5F06-4108-9A8B-AC655113EDC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40CA711B-61C5-4A62-9DCA-D55001651EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CA711B-61C5-4A62-9DCA-D55001651EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CA711B-61C5-4A62-9DCA-D55001651EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CA711B-61C5-4A62-9DCA-D55001651EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57C3C5E4-5F06-4108-9A8B-AC655113EDC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57C3C5E4-5F06-4108-9A8B-AC655113EDC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57C3C5E4-5F06-4108-9A8B-AC655113EDC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57C3C5E4-5F06-4108-9A8B-AC655113EDC1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{40CA711B-61C5-4A62-9DCA-D55001651EEE} = {DCD6899D-2D6F-44FC-8D9B-A2A9BEFA0676}
+		{57C3C5E4-5F06-4108-9A8B-AC655113EDC1} = {DCD6899D-2D6F-44FC-8D9B-A2A9BEFA0676}
+	EndGlobalSection
+EndGlobal
