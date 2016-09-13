@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Consul.Discovery.Example.Controllers
 {
-    [Route("api/values")]
+    // This will auto-register the service but keep in mind that the class gets instantiated for every request.
     [Discoverable("values-service")]
+    [Route("api/values")]
     public class ValuesController : Controller
     {
         [HttpGet]

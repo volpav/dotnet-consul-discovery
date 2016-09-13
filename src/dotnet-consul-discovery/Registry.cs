@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading;
+using Consul.Discovery.Messaging;
 
-namespace Consul.Discovery.Infrastructure
+namespace Consul.Discovery
 {
     /// <summary>
     /// Represents registration type.
@@ -54,47 +56,37 @@ namespace Consul.Discovery.Infrastructure
     }
 
     /// <summary>
-    /// Represents a registry queue.
+    /// Represents a registry for the purpose of auto-registration.
     /// </summary>
-    internal sealed class RegistryQueue
+    internal static class Registry
     {
-        private readonly ConcurrentQueue<Tuple<string, RegistrationType>> _items = 
-            new ConcurrentQueue<Tuple<string, RegistrationType>>();
-
-        private readonly Timer _timer;
-        
-        private static readonly RegistryQueue _current = new RegistryQueue();
+        private static readonly ConcurrentQueue<Tuple<string, RegistrationType>> _items;
+        private static readonly Timer _timer;
 
         /// <summary>
         /// Occurs when registry queue is processing the next item.
         /// </summary>
-        public event EventHandler<RegistrationEventArgs> Processing;
-
-        /// <summary>
-        /// Gets the current registry queue.
-        /// </summary>
-        public static RegistryQueue Current
-        {
-            get { return _current; }
-        }
+        public static event EventHandler<RegistrationEventArgs> Processing;
 
         /// <summary>
         /// Initializes a new instance of an object.
         /// </summary>
-        public RegistryQueue()
+        static Registry()
         {
             int ms = 5000;
 
-            // Starting in [ms] milliseconds, running every [ms] milliseconds.
+            _items = new ConcurrentQueue<Tuple<string, RegistrationType>>();
             _timer = new Timer((state) => ProcessNextItem(), null, ms, ms);
+            Console.WriteLine("here 2");
+            ConfigureAutoRegistration();
         }
 
         /// <summary>
-        /// Adds new item to the queue.
+        /// Adds new item to the registry.
         /// </summary>
         /// <param name="serviceName">Service name.</param>
         /// <param name="registrationType">Registration type.</param>
-        public void Add(string serviceName, RegistrationType registrationType = RegistrationType.Register)
+        public static void Add(string serviceName, RegistrationType registrationType = RegistrationType.Register)
         {
             if (string.IsNullOrWhiteSpace(serviceName))
             {
@@ -107,11 +99,11 @@ namespace Consul.Discovery.Infrastructure
         /// <summary>
         /// Processes next item.
         /// </summary>
-        private void ProcessNextItem()
+        private static void ProcessNextItem()
         {
             Tuple<string, RegistrationType> nextItem;
 
-            if (_items.TryDequeue(out nextItem))
+            if (DiscoveryClient.EnableAutoRegistration && _items.TryDequeue(out nextItem))
             {
                 OnProcessing(new RegistrationEventArgs(
                     serviceName: nextItem.Item1, 
@@ -124,9 +116,55 @@ namespace Consul.Discovery.Infrastructure
         /// Raises "Processing" event.
         /// </summary>
         /// <param name="args">Arguments.</param>
-        private void OnProcessing(RegistrationEventArgs args)
+        private static void OnProcessing(RegistrationEventArgs args)
         {
-            Processing?.Invoke(this, args);
+            Processing?.Invoke(null, args);
+        }
+
+        /// <summary>
+        /// Configures auto-registration.
+        /// </summary>
+        private static void ConfigureAutoRegistration()
+        {
+            Console.WriteLine("here 3");
+            Console.WriteLine(Environment.GetCommandLineArgs().Length);
+
+            string key = "discovery-server-origin";
+
+            // Extracting discovery server origin either from command line argument or from environment variable.
+            string origin = Environment.GetCommandLineArgs()
+                .SkipWhile(arg => arg.IndexOf(string.Concat("--", key, "="), StringComparison.OrdinalIgnoreCase) != 0)
+                .Take(1).FirstOrDefault()?.Split('=')[1] ?? 
+                Environment.GetEnvironmentVariable(key.ToUpperInvariant().Replace('-', '_'));
+
+            Interlocked.CompareExchange(
+                ref DiscoveryClient._default,
+                !string.IsNullOrWhiteSpace(origin) ? new DiscoveryClient(
+                    new ConsulCatalog(
+                        new ConsulHttpClient(origin)
+                    )
+                ) : null,
+                null
+            );
+
+            DiscoveryClient client = DiscoveryClient.Default;
+
+            if (client != null)
+            {
+                Processing += async (sender, args) =>
+                {
+                    switch (args.RegistrationType)
+                    {
+                        case RegistrationType.Register:
+                            // FIXME: Find a good way of exposing this.
+                            await client.Catalog.Register(args.ServiceName, "127.0.0.1:4321");
+                            break;
+                        case RegistrationType.Unregister:
+                            await client.Catalog.Unregister(args.ServiceName);
+                            break;
+                    }
+                };
+            }
         }
     }
 }

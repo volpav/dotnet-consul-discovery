@@ -2,7 +2,6 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "ModuleInit.Fody": "1.5.9",
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1"
   },

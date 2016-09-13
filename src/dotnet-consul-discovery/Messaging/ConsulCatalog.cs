@@ -15,7 +15,7 @@ namespace Consul.Discovery.Messaging
         /// <summary>
         /// Gets the Consul HTTP client used to communicate with Consul.
         /// </summary>
-        protected ConsulHttpClient Client
+        public ConsulHttpClient Client
         {
             get { return _client; }
         }

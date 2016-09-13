@@ -1,5 +1,4 @@
 ﻿using System;
-using Consul.Discovery.Infrastructure;
 
 namespace Consul.Discovery
 {
@@ -28,8 +27,9 @@ namespace Consul.Discovery
 
             Name = name;
 
-            // Adding to a queue for later processing.
-            RegistryQueue.Current.Add(name);
+            Console.WriteLine("here");
+            // Adding to the registry in case of auto-registration.
+            Registry.Add(Name);
         }
     }
 }
